@@ -30,8 +30,10 @@ func echelonArithmetic(m [][]float64, h, w int) [][]float64 {
 					wg.Add(1)
 					go func(j int) {
 						r2 := m[j]
-						res := doRowOpsEchelon(pivot, r2, r)
-						m[j] = res
+						if r2[pivot] != 0 {
+							res := doRowOpsEchelon(pivot, r2, r)
+							m[j] = res
+						}
 						wg.Done()
 					}(j)
 				}
@@ -92,9 +94,9 @@ func subtractRow(r1, r2 []float64) []float64 {
 }
 
 func scaleRow(row []float64, factor float64) []float64 {
-	out := []float64{}
-	for _, v := range row {
-		out = append(out, v*factor)
+	out := make([]float64, len(row))
+	for i, v := range row {
+		out[i] = v * factor
 	}
 	return out
 }
