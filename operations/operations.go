@@ -19,9 +19,7 @@ func EchelonForm(m *matrix.Matrix) *matrix.Matrix {
 			if pivot != -1 {
 				for j := i + 1; j < h; j++ {
 					r2 := newRows[j]
-					factor := r2[pivot] / r[pivot]
-					scaled := scaleRow(r, factor)
-					res := subtractRow(r2, scaled)
+					res := doRowOpsEchelon(pivot, r2, r)
 					newRows[j] = res
 				}
 			}
@@ -82,4 +80,10 @@ func swapRows(m [][]float64, r1, r2 int) [][]float64 {
 	m[r1] = m[r2]
 	m[r2] = temp
 	return m
+}
+
+func doRowOpsEchelon(pivot int, r2, r []float64) []float64 {
+	factor := r2[pivot] / r[pivot]
+	scaled := scaleRow(r, factor)
+	return subtractRow(r2, scaled)
 }
