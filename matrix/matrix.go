@@ -20,7 +20,7 @@ func New(m, n int, values [][]float64) *Matrix {
 	}
 }
 
-//At returns the value in matrix
+//At returns the value at the given position in the matrix
 func (m *Matrix) At(row, col int) float64 {
 	return m.values[row][col]
 }
@@ -33,6 +33,20 @@ func (m *Matrix) String() string {
 			out = fmt.Sprintf("%s %.3f", out, val)
 		}
 		out += " \t|\n"
+	}
+	return out
+}
+
+//Row returns the row at the given position
+func (m *Matrix) Row(row int) []float64 {
+	return m.values[row]
+}
+
+//Column returns the column at the given position
+func (m *Matrix) Column(col int) []float64 {
+	var out []float64
+	for i := 0; i < m.m; i++ {
+		out = append(out, m.values[i][col])
 	}
 	return out
 }
