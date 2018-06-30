@@ -1,6 +1,8 @@
 package operations
 
 import (
+	"sync"
+
 	"github.com/linear-algebra/matrix"
 )
 
@@ -23,11 +25,17 @@ func echelonArithmetic(m [][]float64, h, w int) [][]float64 {
 		if i < h-1 {
 			pivot := findPivot(r, w)
 			if pivot != -1 {
+				wg := &sync.WaitGroup{}
 				for j := i + 1; j < h; j++ {
-					r2 := m[j]
-					res := doRowOpsEchelon(pivot, r2, r)
-					m[j] = res
+					wg.Add(1)
+					go func(j int) {
+						r2 := m[j]
+						res := doRowOpsEchelon(pivot, r2, r)
+						m[j] = res
+						wg.Done()
+					}(j)
 				}
+				wg.Wait()
 			}
 		}
 	}
