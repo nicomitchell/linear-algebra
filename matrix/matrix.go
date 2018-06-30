@@ -50,3 +50,13 @@ func (m *Matrix) Column(col int) []float64 {
 	}
 	return out
 }
+
+//Width returns the number of columns in the matrix
+func (m *Matrix) Width() int {
+	return m.n
+}
+
+//Height returns the number of rows in the matrix
+func (m *Matrix) Height() int {
+	return m.m
+}
