@@ -12,37 +12,8 @@ func EchelonForm(m *matrix.Matrix) *matrix.Matrix {
 	for i := 0; i < h; i++ {
 		newRows[i] = m.Row(i)
 	}
-	for i := 0; i < h; i++ {
-		r := newRows[i]
-		if i < h-1 {
-			pivot := findPivot(r, w)
-			if pivot != -1 {
-				for j := i + 1; j < h; j++ {
-					r2 := newRows[j]
-					res := doRowOpsEchelon(pivot, r2, r)
-					newRows[j] = res
-				}
-			}
-		}
-	}
-	furthestPivot := 0
-	furthestPivotRow := 0
-	for i := 0; i < h; i++ {
-		p := findPivot(newRows[i], w)
-		if p != -1 {
-			if p < furthestPivot && p != -1 {
-				newRows = swapRows(newRows, furthestPivotRow, i)
-				i--
-			}
-			furthestPivot = p
-			furthestPivotRow = i
-		} else {
-			if i < h-1 {
-				newRows = swapRows(newRows, i, i+1)
-				i--
-			}
-		}
-	}
+	newRows = echelonArithmetic(newRows, h, w)
+	newRows = echelonRowSwap(newRows, h, w)
 	return matrix.New(h, w, newRows)
 }
 
@@ -86,4 +57,43 @@ func doRowOpsEchelon(pivot int, r2, r []float64) []float64 {
 	factor := r2[pivot] / r[pivot]
 	scaled := scaleRow(r, factor)
 	return subtractRow(r2, scaled)
+}
+
+func echelonArithmetic(m [][]float64, h, w int) [][]float64 {
+	for i := 0; i < h; i++ {
+		r := m[i]
+		if i < h-1 {
+			pivot := findPivot(r, w)
+			if pivot != -1 {
+				for j := i + 1; j < h; j++ {
+					r2 := m[j]
+					res := doRowOpsEchelon(pivot, r2, r)
+					m[j] = res
+				}
+			}
+		}
+	}
+	return m
+}
+
+func echelonRowSwap(m [][]float64, h, w int) [][]float64 {
+	furthestPivot := 0
+	furthestPivotRow := 0
+	for i := 0; i < h; i++ {
+		p := findPivot(m[i], w)
+		if p != -1 {
+			if p < furthestPivot && p != -1 {
+				m = swapRows(m, furthestPivotRow, i)
+				i--
+			}
+			furthestPivot = p
+			furthestPivotRow = i
+		} else {
+			if i < h-1 {
+				m = swapRows(m, i, i+1)
+				i--
+			}
+		}
+	}
+	return m
 }
